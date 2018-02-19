@@ -13,9 +13,9 @@ BOOST_AUTO_TEST_CASE(offset) {
   };
   using TestStructure = Structure<
           Key,
-          Element<Key, Key::Hoge, 1>,
-          Element<Key, Key::Fuga, 3>,
-          Element<Key, Key::Piyo, 4>>;
+          Element<Key, Key::Hoge, 1, uint8_t>,
+          Element<Key, Key::Fuga, 3, uint8_t>,
+          Element<Key, Key::Piyo, 4, uint8_t>>;
   BOOST_CHECK_EQUAL(TestStructure::offset<Key::Hoge>(), 0);
   BOOST_CHECK_EQUAL(TestStructure::offset<Key::Fuga>(), 1);
   BOOST_CHECK_EQUAL(TestStructure::offset<Key::Piyo>(), 4);

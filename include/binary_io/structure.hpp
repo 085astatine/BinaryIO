@@ -85,22 +85,17 @@ class Structure {
   using element = get_element<key, Args...>;
 
   template <Enum key>
+  using offset_t = impl::get_offset<Enum, key, iterator, iterator::is_end>;
+
+  template <Enum key>
   static std::size_t offset() {
     static_assert(key != Enum::End, "End is reserved");
     static_assert(element<key>::type::key != Enum::End, "invalid key");
-    return impl::get_offset<
-            Enum,
-            key,
-            iterator,
-            iterator::is_end>::value;
+    return offset_t<key>::value;
   }
 
   static std::size_t size() {
-    return impl::get_offset<
-            Enum,
-            Enum::End,
-            iterator,
-            iterator::is_end>::value;
+    return offset_t<Enum::End>::value;
   }
 };
 }  // namespace binary_io

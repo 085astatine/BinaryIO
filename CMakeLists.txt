@@ -20,11 +20,13 @@ message("boost include dir: " ${Boost_INCLUDE_DIR})
 message("boost unit test framework: " ${Boost_UNIT_TEST_FRAMEWORK_LIBRARIES})
 # include directory
 include_directories(
-        ${Boost_INCLUDE_DIR})
+        ${Boost_INCLUDE_DIR}
+        ${CMAKE_HOME_DIRECTORY}/include)
 # test
 add_executable(
         Test
-        test.cpp)
+        test.cpp
+        test/structure.cpp)
 target_link_libraries(
         Test
         ${Boost_UNIT_TEST_FRAMEWORK_LIBRARIES})

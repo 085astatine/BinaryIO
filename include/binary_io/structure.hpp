@@ -79,6 +79,8 @@ class Structure {
   };
 
  public:
+  using kind = Enum;
+
   template <Enum key>
   using element = get_element<key, Args...>;
 

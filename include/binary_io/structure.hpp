@@ -2,18 +2,9 @@
 #define BINARY_IO_STRUCTURE_HPP_
 
 #include <type_traits>
+#include "binary_io/element.hpp"
 
 namespace binary_io {
-template <
-        typename Enum,
-        Enum key_,
-        std::size_t bit_number_>
-struct Element {
-  static_assert(key_ != Enum::End, "End is reserved");
-  static constexpr Enum key = key_;
-  static constexpr size_t bit_number = bit_number_;
-};
-
 namespace impl {
 template <typename Enum>
 struct DummyElement {

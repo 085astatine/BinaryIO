@@ -21,8 +21,7 @@ struct ElementIterator {
 };
 // Element Iterator
 template <typename Enum, size_t bit_offset_, typename Head, typename... Tail>
-struct ElementIterator<Enum, bit_offset_, Head, Tail...>:
-        private ElementIterator<Enum, bit_offset_ + Head::bit_size, Tail...> {
+struct ElementIterator<Enum, bit_offset_, Head, Tail...> {
   using element = Head;
   using next = ElementIterator<Enum, bit_offset_ + Head::bit_size, Tail...>;
   static constexpr std::size_t bit_offset = bit_offset_;

@@ -7,13 +7,13 @@ namespace binary_io {
 template <
         typename Enum,
         Enum key_,
-        std::size_t bit_number_,
+        std::size_t bit_size_,
         typename Type>
 struct Element {
   static_assert(key_ != Enum::End, "End is reserved");
   using value_type = Type;
   static constexpr Enum key = key_;
-  static constexpr size_t bit_number = bit_number_;
+  static constexpr size_t bit_size = bit_size_;
 };
 }  // namespace binary_io
 #endif  // BINARY_IO_ELEMENT_HPP_

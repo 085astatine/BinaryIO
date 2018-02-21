@@ -82,7 +82,7 @@ constexpr std::size_t get_index() {
 template <typename Enum, typename... Args>
 class Structure {
  private:
-  using iterator = impl::ElementIterator<Enum, 0, 0, Args...>;
+  using iterator_begin = impl::ElementIterator<Enum, 0, 0, Args...>;
   // get element: end
   template <Enum, typename...>
   struct get_element {
@@ -108,22 +108,22 @@ class Structure {
   static constexpr std::size_t bit_offset() {
     static_assert(key != Enum::End, "End is reserved");
     static_assert(element<key>::key != Enum::End, "invalid key");
-    return impl::get_bit_offset<Enum, key, iterator>();
+    return impl::get_bit_offset<Enum, key, iterator_begin>();
   }
 
   static constexpr std::size_t bit_size() {
-    return impl::get_bit_offset<Enum, Enum::End, iterator>();
+    return impl::get_bit_offset<Enum, Enum::End, iterator_begin>();
   }
 
   template <Enum key>
   static constexpr std::size_t element_index() {
     static_assert(key != Enum::End, "End is reserved");
     static_assert(element<key>::key != Enum::End, "invalid key");
-    return impl::get_index<Enum, key, iterator>();
+    return impl::get_index<Enum, key, iterator_begin>();
   }
 
   static constexpr std::size_t element_size() {
-    return impl::get_index<Enum, Enum::End, iterator>();
+    return impl::get_index<Enum, Enum::End, iterator_begin>();
   }
 };
 }  // namespace binary_io

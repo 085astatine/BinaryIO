@@ -12,7 +12,7 @@ class Writer {
   using kind = typename structure::kind;
 
   template<kind key>
-  using element = typename structure::template element<key>::type;
+  using element = typename structure::template element<key>;
 
  public:
   // constructor

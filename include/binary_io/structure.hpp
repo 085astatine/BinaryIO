@@ -107,7 +107,7 @@ class Structure {
   using kind = Enum;
 
   template <Enum key>
-  using element = get_element<key, Args...>;
+  using element = typename get_element<key, Args...>::type;
 
   template <Enum key>
   using bit_offset_t =
@@ -120,7 +120,7 @@ class Structure {
   template <Enum key>
   static std::size_t bit_offset() {
     static_assert(key != Enum::End, "End is reserved");
-    static_assert(element<key>::type::key != Enum::End, "invalid key");
+    static_assert(element<key>::key != Enum::End, "invalid key");
     return bit_offset_t<key>::value;
   }
 
@@ -131,7 +131,7 @@ class Structure {
   template <Enum key>
   static std::size_t element_index() {
     static_assert(key != Enum::End, "End is reserved");
-    static_assert(element<key>::type::key != Enum::End, "invalid key");
+    static_assert(element<key>::key != Enum::End, "invalid key");
     return element_index_t<key>::value;
   }
 

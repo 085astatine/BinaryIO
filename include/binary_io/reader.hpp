@@ -29,13 +29,15 @@ class Reader {
     static_assert(key != kind::End, "End is reserved");
     static_assert(element<key>::key != kind::End, "invalid key");
     const auto bit_offset = structure::template bit_offset<key>();
-    assert(buffer_head_
-           && (bit_offset + element<key>::bit_size <= buffer_size_ * 8));
-    // TODO: if (ptr & size check) when Element::default_value() is defined
-    return element<key>::Read(
-            buffer_head_,
-            buffer_size_,
-            structure::template bit_offset<key>());
+    if (buffer_head_
+        && (bit_offset + element<key>::bit_size <= buffer_size_ * 8)) {
+      return element<key>::Read(
+              buffer_head_,
+              buffer_size_,
+              structure::template bit_offset<key>());
+    } else {
+      return element<key>::DefaultValue();
+    }
   }
 
  private:

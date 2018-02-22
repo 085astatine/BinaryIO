@@ -9,8 +9,10 @@ template <
         Enum key_,
         std::size_t bit_size_,
         typename Type>
-struct Element {
+class Element {
   static_assert(key_ != Enum::End, "End is reserved");
+
+ public:
   using value_type = Type;
   static constexpr Enum key = key_;
   static constexpr size_t bit_size = bit_size_;

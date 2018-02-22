@@ -36,7 +36,6 @@ class Writer {
         && (bit_offset + element<key>::bit_size <= buffer_size_ * 8)) {
       element<key>::Write(
               buffer_head_,
-              buffer_size_,
               value,
               bit_offset);
       SetWrittenFlag(structure::template element_index<key>(), true);

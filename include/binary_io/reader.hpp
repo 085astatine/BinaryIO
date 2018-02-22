@@ -33,7 +33,6 @@ class Reader {
         && (bit_offset + element<key>::bit_size <= buffer_size_ * 8)) {
       return element<key>::Read(
               buffer_head_,
-              buffer_size_,
               structure::template bit_offset<key>());
     } else {
       return element<key>::DefaultValue();

@@ -17,23 +17,22 @@ template <
 class Bitfield: public Element<Enum, key, bit_size, Type> {
   static_assert(std::is_unsigned<Type>::value, "invalid type");
   static_assert(min_value_ <= max_value_, "invalid range");
-  using base = Element<Enum, key, bit_size, Type>;
 
-  static constexpr typename base::value_type default_value = default_value_;
-  static constexpr typename base::value_type min_value = min_value_;
-  static constexpr typename base::value_type max_value = max_value_;
+  static constexpr Type default_value = default_value_;
+  static constexpr Type min_value = min_value_;
+  static constexpr Type max_value = max_value_;
 
  public:
   // default value
-  static constexpr typename base::value_type DefaultValue() {
+  static constexpr Type DefaultValue() {
     return default_value;
   }
   // read
-  static typename base::value_type Read(
+  static Type Read(
           const void* buffer_head,
           const std::size_t& bit_offset) {
-    auto result = typename base::value_type(0);
-    for (int i = static_cast<int>(base::bit_size) - 1; i >= 0; --i) {
+    auto result = Type(0);
+    for (int i = static_cast<int>(bit_size) - 1; i >= 0; --i) {
       // shift
       result <<= 1;
       // bit check
@@ -49,10 +48,10 @@ class Bitfield: public Element<Enum, key, bit_size, Type> {
   // write
   static void Write(
           void* buffer_head,
-          const typename base::value_type& value,
+          const Type& value,
           const std::size_t& bit_offset) {
     const auto normalized_value = Normalize(value);
-    for (std::size_t i = 0; i < base::bit_size; ++i) {
+    for (std::size_t i = 0; i < bit_size; ++i) {
       // bit mask
       const auto value_byte =
               *(reinterpret_cast<const uint8_t*>(&normalized_value) + i / 8);
@@ -68,8 +67,8 @@ class Bitfield: public Element<Enum, key, bit_size, Type> {
   }
 
  private:
-  static constexpr typename base::value_type Normalize(
-          const typename base::value_type& value) {
+  static constexpr Type Normalize(
+          const Type& value) {
     return (min_value <= value && value <= max_value)
            ? value
            : DefaultValue();

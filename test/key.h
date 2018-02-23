@@ -2,6 +2,7 @@
 #define TEST_KEY_H_
 
 enum class TestKey{
+  Key00,
   Key01,
   Key02,
   Key03,

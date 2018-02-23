@@ -43,6 +43,24 @@ struct ElementIterator<Enum, index_, bit_offset_, Head, Tail...> {
   static constexpr std::size_t index = index_;
   static constexpr std::size_t bit_offset = bit_offset_;
 };
+// Element Iterator: padding
+template <
+        typename Enum,
+        size_t index,
+        size_t bit_offset,
+        size_t padding_bit_size,
+        typename... Tail>
+struct ElementIterator<
+            Enum,
+            index,
+            bit_offset,
+            Padding<padding_bit_size>,
+            Tail...> :
+        public ElementIterator<
+                    Enum,
+                    index,
+                    bit_offset + Padding<padding_bit_size>::bit_size,
+                    Tail...> {};
 // get bit offset
 template <
         typename Enum, Enum key, typename Iterator,
@@ -96,6 +114,11 @@ class Structure {
             Head,
             typename get_element<key, Tail...>::type>
             ::type;
+  };
+  // get element: padding
+  template <Enum key, std::size_t padding_bit_size, typename... Tail>
+  struct get_element<key, Padding<padding_bit_size>, Tail...> {
+    using type = typename get_element<key, Tail...>::type;
   };
 
  public:

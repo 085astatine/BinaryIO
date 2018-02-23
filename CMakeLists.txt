@@ -26,6 +26,7 @@ include_directories(
 add_executable(
         Test
         test.cpp
+        test/bitfield.cpp
         test/structure.cpp)
 target_link_libraries(
         Test

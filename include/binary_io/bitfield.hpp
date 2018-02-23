@@ -9,15 +9,15 @@ namespace binary_io {
 template <
         typename Enum,
         Enum key,
-        std::size_t bit_number,
+        std::size_t bit_size,
         typename Type,
         Type default_value_ = Type(0),
         Type min_value_ = Type(0),
         Type max_value_ = Type(-1)>
-class Bitfield: public Element<Enum, key, bit_number, Type> {
+class Bitfield: public Element<Enum, key, bit_size, Type> {
   static_assert(std::is_unsigned<Type>::value, "invalid type");
   static_assert(min_value_ <= max_value_, "invalid range");
-  using base = Element<Enum, key, bit_number, Type>;
+  using base = Element<Enum, key, bit_size, Type>;
 
   static constexpr typename base::value_type default_value = default_value_;
   static constexpr typename base::value_type min_value = min_value_;

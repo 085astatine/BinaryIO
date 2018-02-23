@@ -11,12 +11,17 @@ template <
         Enum key,
         std::size_t bit_number,
         typename Type,
-        Type default_value_ = 0>
+        Type default_value_ = Type(0),
+        Type min_value_ = Type(0),
+        Type max_value_ = Type(-1)>
 class Bitfield: public Element<Enum, key, bit_number, Type> {
   static_assert(std::is_unsigned<Type>::value, "invalid type");
+  static_assert(min_value_ <= max_value_, "invalid range");
   using base = Element<Enum, key, bit_number, Type>;
 
   static constexpr typename base::value_type default_value = default_value_;
+  static constexpr typename base::value_type min_value = min_value_;
+  static constexpr typename base::value_type max_value = max_value_;
 
  public:
   // default value
@@ -39,17 +44,18 @@ class Bitfield: public Element<Enum, key, bit_number, Type> {
         result += 0x1;
       }
     }
-    return result;
+    return Normalize(result);
   }
   // write
   static void Write(
           void* buffer_head,
           const typename base::value_type& value,
           const std::size_t& bit_offset) {
+    const auto normalized_value = Normalize(value);
     for (std::size_t i = 0; i < base::bit_size; ++i) {
-      // value
+      // bit mask
       const auto value_byte =
-              *(reinterpret_cast<const uint8_t*>(&value) + i / 8);
+              *(reinterpret_cast<const uint8_t*>(&normalized_value) + i / 8);
       const uint8_t value_mask = 0x01 << i % 8;
       // write
       if ((value_byte & value_mask) != 0) {
@@ -59,6 +65,14 @@ class Bitfield: public Element<Enum, key, bit_number, Type> {
         *write_byte_ptr |= write_mask;
       }
     }
+  }
+
+ private:
+  static constexpr typename base::value_type Normalize(
+          const typename base::value_type& value) {
+    return (min_value <= value && value <= max_value)
+           ? value
+           : DefaultValue();
   }
 };
 }  // namespace binary_io

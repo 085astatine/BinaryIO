@@ -17,6 +17,7 @@ template <
 class Bitfield: public Element<Enum, key, bit_size, Type> {
   static_assert(std::is_unsigned<Type>::value, "invalid type");
   static_assert(min_value_ <= max_value_, "invalid range");
+  static_assert(bit_size <= sizeof(Type) * 8, "Type is short of bits");
 
   static constexpr Type default_value = default_value_;
   static constexpr Type min_value = min_value_;

@@ -109,6 +109,9 @@ class Structure {
   // get element
   template <Enum key, typename Head, typename... Tail>
   struct get_element<key, Head, Tail...> {
+    static_assert(key != Head::key
+                  || get_element<key ,Tail...>::type::key == Enum::End,
+                  "dupricate key");
     using type = typename std::conditional<
             key == Head::key,
             Head,

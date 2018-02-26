@@ -59,7 +59,7 @@ class Bitfield: public Element<Enum, key, bit_size, Type> {
       const uint8_t value_mask = 0x01 << i % 8;
       // write
       if ((value_byte & value_mask) != 0) {
-        auto write_byte_ptr =
+        auto* const write_byte_ptr =
                 static_cast<uint8_t*>(buffer_head) + (bit_offset + i) / 8;
         const uint8_t write_mask = 0x1 << (bit_offset + i) % 8;
         *write_byte_ptr |= write_mask;

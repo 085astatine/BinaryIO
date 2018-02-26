@@ -27,6 +27,8 @@ add_executable(
         Test
         test.cpp
         test/bitfield.cpp
+        test/float.cpp
+        test/integer.cpp
         test/padding.cpp
         test/structure.cpp)
 target_link_libraries(

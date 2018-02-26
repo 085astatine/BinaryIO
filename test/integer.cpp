@@ -9,6 +9,48 @@
 
 namespace binary_io {
 BOOST_AUTO_TEST_SUITE(integer)
+// less than min
+BOOST_AUTO_TEST_CASE(less_than_min) {
+  using TestStructure = Structure<
+          TestKey,
+          Integer<TestKey, TestKey::Key00, int8_t, -1, 0, 127>>;
+  // read
+  const std::array<uint8_t, 1> read_buffer = {{static_cast<uint8_t>(-2)}};
+  Reader<TestStructure> reader(read_buffer.data(), read_buffer.size());
+  BOOST_CHECK_EQUAL(reader.Get<TestKey::Key00>(), -1);
+  // write
+  std::array<uint8_t, 1> write_buffer = {};
+  Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
+  writer.Set<TestKey::Key00>(-2);
+  BOOST_CHECK(writer.IsAllWritten());
+  const std::array<uint8_t, 1> write_expected  = {{static_cast<uint8_t>(-1)}};
+  BOOST_CHECK_EQUAL_COLLECTIONS(
+          write_expected.begin(),
+          write_expected.end(),
+          write_buffer.begin(),
+          write_buffer.end());
+}
+// grater than max
+BOOST_AUTO_TEST_CASE(greater_than_max) {
+  using TestStructure = Structure<
+          TestKey,
+          Integer<TestKey, TestKey::Key00, uint8_t, 0, 0, 1>>;
+  // read
+  const std::array<uint8_t, 1> read_buffer = {{2}};
+  Reader<TestStructure> reader(read_buffer.data(), read_buffer.size());
+  BOOST_CHECK_EQUAL(reader.Get<TestKey::Key00>(), 0);
+  // write
+  std::array<uint8_t, 1> write_buffer = {};
+  Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
+  writer.Set<TestKey::Key00>(2);
+  BOOST_CHECK(writer.IsAllWritten());
+  const std::array<uint8_t, 1> write_expected  = {{0}};
+  BOOST_CHECK_EQUAL_COLLECTIONS(
+          write_expected.begin(),
+          write_expected.end(),
+          write_buffer.begin(),
+          write_buffer.end());
+}
 // uint8_t
 BOOST_AUTO_TEST_CASE(uint8) {
   using TestStructure = Structure<

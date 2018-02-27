@@ -41,8 +41,8 @@ class Writer {
       SetWrittenFlag(structure::template element_index<key>(), true);
     }
   }
-  // have been all element written
-  bool IsAllWritten() const {
+  // have been all element set
+  bool IsAllSet() const {
     for (std::size_t i = 0; i < structure::element_size(); ++i) {
       if (!GetWrittenFlag(i)) {
         return false;

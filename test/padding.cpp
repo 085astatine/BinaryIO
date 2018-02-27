@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(padding) {
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(0x1);
   writer.Set<TestKey::Key01>(0x7);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   const std::array<uint8_t, 1> write_expected = {{0xe1}};
   BOOST_CHECK_EQUAL_COLLECTIONS(
           write_expected.begin(),
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE(continuous_padding) {
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(0x1);
   writer.Set<TestKey::Key01>(0x7);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   const std::array<uint8_t, 1> write_expected = {{0xe1}};
   BOOST_CHECK_EQUAL_COLLECTIONS(
           write_expected.begin(),

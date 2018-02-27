@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(less_than_min) {
   std::array<uint8_t, 1> write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(-2);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   const std::array<uint8_t, 1> write_expected  = {{static_cast<uint8_t>(-1)}};
   BOOST_CHECK_EQUAL_COLLECTIONS(
           write_expected.begin(),
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(greater_than_max) {
   std::array<uint8_t, 1> write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(2);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   const std::array<uint8_t, 1> write_expected  = {{0}};
   BOOST_CHECK_EQUAL_COLLECTIONS(
           write_expected.begin(),
@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(uint8) {
   std::array<uint8_t, 1>  write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(42);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   BOOST_CHECK_EQUAL_COLLECTIONS(
           read_buffer.begin(),
           read_buffer.end(),
@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(int8) {
   std::array<uint8_t, 1>  write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(-42);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   BOOST_CHECK_EQUAL_COLLECTIONS(
           read_buffer.begin(),
           read_buffer.end(),
@@ -105,7 +105,7 @@ BOOST_AUTO_TEST_CASE(uint16) {
   std::array<uint8_t, 2>  write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(0xcafe);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   BOOST_CHECK_EQUAL_COLLECTIONS(
           read_buffer.begin(),
           read_buffer.end(),
@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE(int16) {
   std::array<uint8_t, 2>  write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(-12345);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   BOOST_CHECK_EQUAL_COLLECTIONS(
           read_buffer.begin(),
           read_buffer.end(),
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE(uint32) {
   std::array<uint8_t, 4>  write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(0xdeadbeef);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   BOOST_CHECK_EQUAL_COLLECTIONS(
           read_buffer.begin(),
           read_buffer.end(),
@@ -167,7 +167,7 @@ BOOST_AUTO_TEST_CASE(int32) {
   std::array<uint8_t, 4>  write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(-1234567890);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   BOOST_CHECK_EQUAL_COLLECTIONS(
           read_buffer.begin(),
           read_buffer.end(),
@@ -188,7 +188,7 @@ BOOST_AUTO_TEST_CASE(uint64) {
   std::array<uint8_t, 8> write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(0xfedcba9876543210);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   BOOST_CHECK_EQUAL_COLLECTIONS(
           read_buffer.begin(),
           read_buffer.end(),
@@ -209,7 +209,7 @@ BOOST_AUTO_TEST_CASE(int64) {
   std::array<uint8_t, 8>  write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(-1234567890987654321);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   BOOST_CHECK_EQUAL_COLLECTIONS(
           read_buffer.begin(),
           read_buffer.end(),
@@ -242,7 +242,7 @@ BOOST_AUTO_TEST_CASE(mix_in) {
   writer.Set<TestKey::Key01>(0x1032);
   writer.Set<TestKey::Key02>(0x10325476);
   writer.Set<TestKey::Key03>(0x1032547698badcfe);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   BOOST_CHECK_EQUAL_COLLECTIONS(
           read_buffer.begin(),
           read_buffer.end(),

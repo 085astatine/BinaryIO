@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(float32) {
   std::array<uint8_t, 4> write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(pi);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   BOOST_CHECK_EQUAL_COLLECTIONS(
           read_buffer.begin(),
           read_buffer.end(),
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(float64) {
   std::array<uint8_t, 8> write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(pi);
-  BOOST_CHECK(writer.IsAllWritten());
+  BOOST_CHECK(writer.IsAllSet());
   BOOST_CHECK_EQUAL_COLLECTIONS(
           read_buffer.begin(),
           read_buffer.end(),

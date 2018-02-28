@@ -33,9 +33,9 @@ class Integer: public Value<Enum, key, Type> {
   // write
   static void Write(
           void* buffer_head,
-          const Type& value,
-          const std::size_t& bit_offset) {
-    base::Write(buffer_head, Normalize(value), bit_offset);
+          const std::size_t& bit_offset,
+          const Type& value) {
+    base::Write(buffer_head, bit_offset, Normalize(value));
   }
 
  private:

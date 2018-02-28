@@ -26,14 +26,8 @@ class Writer {
     assert(structure::bit_size() <= buffer_size_ * 8);
   }
   // setter
-  template<
-      kind key,
-      typename std::enable_if<
-              !(std::is_pointer<typename element<key>::value_type>::value
-                || std::is_array<typename element<key>::value_type>::value)>
-              ::type *& = impl::enabler>
-  void Set(
-          const typename element<key>::value_type& value) {
+  template<kind key, typename... Args>
+  void Set(Args&&... args) {
     static_assert(key != kind::End, "End is reserved");
     static_assert(element<key>::key != kind::End, "invalid key");
     const auto bit_offset = structure::template bit_offset<key>();
@@ -41,29 +35,8 @@ class Writer {
         && (bit_offset + element<key>::bit_size <= buffer_size_ * 8)) {
       element<key>::Write(
               buffer_head_,
-              value,
-              bit_offset);
-      SetWrittenFlag(structure::template element_index<key>(), true);
-    }
-  }
-  // setter: binary or array
-  template<
-      kind key,
-      typename std::enable_if<
-              std::is_pointer<typename element<key>::value_type>::value
-              || std::is_array<typename element<key>::value_type>::value>
-              ::type *& = impl::enabler>
-  void Set(
-          typename element<key>::const_value_pointer value) {
-    static_assert(key != kind::End, "End is reserved");
-    static_assert(element<key>::key != kind::End, "invalid key");
-    const auto bit_offset = structure::template bit_offset<key>();
-    if (buffer_head_
-        && (bit_offset + element<key>::bit_size <= buffer_size_ * 8)) {
-      element<key>::Write(
-              buffer_head_,
-              value,
-              bit_offset);
+              bit_offset,
+              std::forward<Args>(args)...);
       SetWrittenFlag(structure::template element_index<key>(), true);
     }
   }

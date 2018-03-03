@@ -13,6 +13,16 @@ template <typename Enum>
 struct DummyElement {
   static constexpr Enum key = Enum::End;
 };
+// check if the Element has DefaultValue()
+template<typename T>
+class is_default_value_defined {
+  template<typename U>
+  static auto check(U) -> decltype(U::DefaultValue(), std::true_type{});
+  static std::false_type check(...);
+
+public:
+  static constexpr bool value = decltype(check(std::declval<T>()))::value;
+};
 // Element Iterator: end
 template <
         typename Enum,

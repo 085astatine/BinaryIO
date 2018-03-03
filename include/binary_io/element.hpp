@@ -17,19 +17,21 @@ class Element {
   static constexpr Enum key = key_;
   static constexpr size_t bit_size = bit_size_;
 
-  // default value: be redefined with inheritance class
+  /*
+  // default value
   static constexpr value_type DefaultValue();
-  // read: be redefined with inheritance class
-  static value_type Read(
+  // read
+  //   if DefaultValue() is not defined, return void
+  static (value_type or void) Read(
           const void* buffer_head,
-          const std::size_t& buffer_size,
-          const std::size_t& bit_offset);
-  // write: be redefined with inheritance class
+          const std::size_t& bit_offset,
+          args...);
+  // write
   static void Write(
           const void* buffer_head,
-          const std::size_t& buffer_size,
-          const value_type& value,
-          const std::size_t& bit_offset);
+          const std::size_t& bit_offset,
+          args...);
+  */
 };
 
 template <std::size_t bit_size_>

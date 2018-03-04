@@ -52,24 +52,27 @@ class Bitfield: public Element<Enum, key, bit_size, Type> {
     }
   }
   // write
-  static void Write(
+  static bool Write(
           void* buffer_head,
           const std::size_t& bit_offset,
           const Type& value) {
-    const auto normalized_value = IsValid(value)? value: DefaultValue();
-    for (std::size_t i = 0; i < bit_size; ++i) {
-      // bit mask
-      const auto value_byte =
-              *(reinterpret_cast<const uint8_t*>(&normalized_value) + i / 8);
-      const uint8_t value_mask = 0x01 << i % 8;
-      // write
-      if ((value_byte & value_mask) != 0) {
-        auto* const write_byte_ptr =
-                static_cast<uint8_t*>(buffer_head) + (bit_offset + i) / 8;
-        const uint8_t write_mask = 0x1 << (bit_offset + i) % 8;
-        *write_byte_ptr |= write_mask;
+    if (IsValid(value)) {
+      for (std::size_t i = 0; i < bit_size; ++i) {
+        // bit mask
+        const auto value_byte =
+                *(reinterpret_cast<const uint8_t*>(&value) + i / 8);
+        const uint8_t value_mask = 0x01 << i % 8;
+        // write
+        if ((value_byte & value_mask) != 0) {
+          auto* const write_byte_ptr =
+                  static_cast<uint8_t*>(buffer_head) + (bit_offset + i) / 8;
+          const uint8_t write_mask = 0x1 << (bit_offset + i) % 8;
+          *write_byte_ptr |= write_mask;
+        }
       }
+      return true;
     }
+    return false;
   }
 
  private:

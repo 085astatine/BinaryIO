@@ -27,7 +27,8 @@ class Element {
           const std::size_t& bit_offset,
           args...);
   // write
-  static void Write(
+  //   returns whether writing has been successful
+  static bool Write(
           const void* buffer_head,
           const std::size_t& bit_offset,
           args...);

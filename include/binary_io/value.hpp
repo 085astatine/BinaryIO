@@ -23,7 +23,7 @@ class Value: public Element<Enum, key, sizeof(Type) * 8, Type> {
     return result;
   }
   // write
-  static void Write(
+  static bool Write(
           void* buffer_head,
           const std::size_t& bit_offset,
           const Type& value) {
@@ -36,6 +36,7 @@ class Value: public Element<Enum, key, sizeof(Type) * 8, Type> {
               + bit_offset / 8 + i;
       *write_ptr = *(read_ptr + i);
     }
+    return true;
   }
 };
 }  // namespace binary_io

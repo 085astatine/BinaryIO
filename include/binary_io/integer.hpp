@@ -38,13 +38,15 @@ class Integer: public Value<Enum, key, Type> {
     return boost::none;
   }
   // write
-  static void Write(
+  static bool Write(
           void* buffer_head,
           const std::size_t& bit_offset,
           const Type& value) {
-    base::Write(buffer_head,
-                bit_offset,
-                IsValid(value)? value: DefaultValue());
+    if (IsValid(value)) {
+      base::Write(buffer_head, bit_offset, value);
+      return true;
+    }
+    return false;
   }
 
  private:

@@ -27,18 +27,33 @@ class Writer {
   }
   // setter
   template<kind key, typename... Args>
-  void Set(Args&&... args) {
+  bool Set(Args&&... args) {
     static_assert(key != kind::End, "End is reserved");
     static_assert(element<key>::key != kind::End, "invalid key");
     const auto bit_offset = structure::template bit_offset<key>();
     if (buffer_head_
         && (bit_offset + element<key>::bit_size <= buffer_size_ * 8)) {
-      element<key>::Write(
+      if (element<key>::Write(
               buffer_head_,
               bit_offset,
-              std::forward<Args>(args)...);
-      SetWrittenFlag(structure::template element_index<key>(), true);
+              std::forward<Args>(args)...)) {
+        SetWrittenFlag(structure::template element_index<key>(), true);
+        return true;
+      }
     }
+    return false;
+  }
+  // setter: force
+  template<kind key, typename... Args>
+  typename std::enable_if<
+          impl::is_default_value_defined<element<key>>::value,
+          bool>::type
+  ForceSet(Args&&... args) {
+    if (Set<key>(std::forward<Args>(args)...)
+        || SetDefaultValue<key>()) {
+      return true;
+    }
+    return false;
   }
   // have been all element set
   bool IsAllSet() const {
@@ -51,6 +66,21 @@ class Writer {
   }
 
  private:
+  // set default value
+  template<kind key>
+  bool SetDefaultValue() {
+    static_assert(key != kind::End, "End is reserved");
+    static_assert(element<key>::key != kind::End, "invalid key");
+    const auto bit_offset = structure::template bit_offset<key>();
+    if (buffer_head_
+        && (bit_offset + element<key>::bit_size <= buffer_size_ * 8)) {
+      if (element<key>::WriteDefaultValue(buffer_head_, bit_offset)) {
+        SetWrittenFlag(structure::template element_index<key>(), true);
+        return true;
+      }
+    }
+    return false;
+  }
   // get writtern flag
   bool GetWrittenFlag(const std::size_t& index) const {
     const uint8_t mask = 0x1 << index % 8;

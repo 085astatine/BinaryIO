@@ -21,6 +21,8 @@ BOOST_AUTO_TEST_CASE(less_than_min) {
   std::array<uint8_t, 1> write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(0x00);
+  BOOST_CHECK(!writer.IsAllSet());
+  writer.ForceSet<TestKey::Key00>(0x00);
   BOOST_CHECK(writer.IsAllSet());
   const std::array<uint8_t, 1> write_expected = {{0x10}};
   BOOST_CHECK_EQUAL_COLLECTIONS(
@@ -43,6 +45,8 @@ BOOST_AUTO_TEST_CASE(greater_than_max) {
   std::array<uint8_t, 1> write_buffer = {};
   Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
   writer.Set<TestKey::Key00>(0x1f);
+  BOOST_CHECK(!writer.IsAllSet());
+  writer.ForceSet<TestKey::Key00>(0x1f);
   BOOST_CHECK(writer.IsAllSet());
   const std::array<uint8_t, 1> write_expected = {{0x01}};
   BOOST_CHECK_EQUAL_COLLECTIONS(

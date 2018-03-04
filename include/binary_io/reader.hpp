@@ -24,8 +24,11 @@ class Reader {
     assert(structure::bit_size() <= buffer_size_ * 8);
   }
   // getter
-  template<kind key>
-  typename element<key>::value_type Get() const {
+  template<kind key, typename... Args>
+  typename std::enable_if<
+          impl::is_default_value_defined<element<key>>::value,
+          typename element<key>::value_type>::type
+  Get(Args&&... args) const {
     static_assert(key != kind::End, "End is reserved");
     static_assert(element<key>::key != kind::End, "invalid key");
     const auto bit_offset = structure::template bit_offset<key>();
@@ -33,9 +36,27 @@ class Reader {
         && (bit_offset + element<key>::bit_size <= buffer_size_ * 8)) {
       return element<key>::Read(
               buffer_head_,
-              structure::template bit_offset<key>());
+              bit_offset,
+              args...);
     } else {
       return element<key>::DefaultValue();
+    }
+  }
+  // getter: DefaultValue is not defined
+  template<kind key, typename... Args>
+  typename std::enable_if<
+          !impl::is_default_value_defined<element<key>>::value,
+          void>::type
+  Get(Args&&... args) const {
+    static_assert(key != kind::End, "End is reserved");
+    static_assert(element<key>::key != kind::End, "invalid key");
+    const auto bit_offset = structure::template bit_offset<key>();
+    if (buffer_head_
+        && (bit_offset + element<key>::bit_size <= buffer_size_ * 8)) {
+      return element<key>::Read(
+              buffer_head_,
+              bit_offset,
+              args...);
     }
   }
 

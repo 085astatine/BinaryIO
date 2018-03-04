@@ -24,8 +24,8 @@ class Value: public Element<Enum, key, sizeof(Type) * 8, Type> {
   // write
   static void Write(
           void* buffer_head,
-          const Type& value,
-          const std::size_t& bit_offset) {
+          const std::size_t& bit_offset,
+          const Type& value) {
     assert(bit_offset % 8 == 0);
     const auto byte_size = sizeof(Type);
     const auto* const read_ptr = reinterpret_cast<const uint8_t*>(&value);

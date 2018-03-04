@@ -49,8 +49,8 @@ class Bitfield: public Element<Enum, key, bit_size, Type> {
   // write
   static void Write(
           void* buffer_head,
-          const Type& value,
-          const std::size_t& bit_offset) {
+          const std::size_t& bit_offset,
+          const Type& value) {
     const auto normalized_value = Normalize(value);
     for (std::size_t i = 0; i < bit_size; ++i) {
       // bit mask

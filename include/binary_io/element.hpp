@@ -32,6 +32,11 @@ class Element {
           const void* buffer_head,
           const std::size_t& bit_offset,
           args...);
+  // write defaule value
+  //   returns whether writing was successful
+  static bool WriteDefaultValue(
+          const void* buffer_head,
+          const std::size_t& bit_offset);
   */
 };
 

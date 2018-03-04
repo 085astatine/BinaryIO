@@ -48,6 +48,12 @@ class Integer: public Value<Enum, key, Type> {
     }
     return false;
   }
+  // write default value
+  static bool WriteDefaultValue(
+          void* buffer_head,
+          const std::size_t& bit_offset) {
+    return Write(buffer_head, bit_offset, DefaultValue());
+  }
 
  private:
   // check if the value is valid

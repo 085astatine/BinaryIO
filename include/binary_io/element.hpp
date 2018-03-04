@@ -22,15 +22,21 @@ class Element {
   static constexpr value_type DefaultValue();
   // read
   //   if DefaultValue() is not defined, return void
-  static (value_type or void) Read(
+  static (boost::optional<value_type> or void) Read(
           const void* buffer_head,
           const std::size_t& bit_offset,
           args...);
   // write
-  static void Write(
+  //   returns whether writing has been successful
+  static bool Write(
           const void* buffer_head,
           const std::size_t& bit_offset,
           args...);
+  // write defaule value
+  //   returns whether writing was successful
+  static bool WriteDefaultValue(
+          const void* buffer_head,
+          const std::size_t& bit_offset);
   */
 };
 

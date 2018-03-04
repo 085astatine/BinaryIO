@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <type_traits>
+#include <boost/optional.hpp>
 #include "binary_io/element.hpp"
 
 namespace binary_io {
@@ -29,7 +30,7 @@ class Bitfield: public Element<Enum, key, bit_size, Type> {
     return default_value;
   }
   // read
-  static Type Read(
+  static boost::optional<Type> Read(
           const void* buffer_head,
           const std::size_t& bit_offset) {
     auto result = Type(0);
@@ -44,35 +45,48 @@ class Bitfield: public Element<Enum, key, bit_size, Type> {
         result += 0x1;
       }
     }
-    return Normalize(result);
+    if (IsValid(result)) {
+      return result;
+    } else {
+      return boost::none;
+    }
   }
   // write
-  static void Write(
+  static bool Write(
           void* buffer_head,
           const std::size_t& bit_offset,
           const Type& value) {
-    const auto normalized_value = Normalize(value);
-    for (std::size_t i = 0; i < bit_size; ++i) {
-      // bit mask
-      const auto value_byte =
-              *(reinterpret_cast<const uint8_t*>(&normalized_value) + i / 8);
-      const uint8_t value_mask = 0x01 << i % 8;
-      // write
-      if ((value_byte & value_mask) != 0) {
-        auto* const write_byte_ptr =
-                static_cast<uint8_t*>(buffer_head) + (bit_offset + i) / 8;
-        const uint8_t write_mask = 0x1 << (bit_offset + i) % 8;
-        *write_byte_ptr |= write_mask;
+    if (IsValid(value)) {
+      for (std::size_t i = 0; i < bit_size; ++i) {
+        // bit mask
+        const auto value_byte =
+                *(reinterpret_cast<const uint8_t*>(&value) + i / 8);
+        const uint8_t value_mask = 0x01 << i % 8;
+        // write
+        if ((value_byte & value_mask) != 0) {
+          auto* const write_byte_ptr =
+                  static_cast<uint8_t*>(buffer_head) + (bit_offset + i) / 8;
+          const uint8_t write_mask = 0x1 << (bit_offset + i) % 8;
+          *write_byte_ptr |= write_mask;
+        }
       }
+      return true;
     }
+    return false;
+  }
+  // write default value
+  static bool WriteDefaultValue(
+          void* buffer_head,
+          const std::size_t& bit_offset) {
+    return Write(buffer_head, bit_offset, DefaultValue());
   }
 
  private:
-  static constexpr Type Normalize(
+  // check if the value is valid
+  static constexpr bool IsValid(
           const Type& value) {
     return (min_value <= value && value <= max_value)
-           ? value
-           : DefaultValue();
+           || value == DefaultValue();
   }
 };
 }  // namespace binary_io

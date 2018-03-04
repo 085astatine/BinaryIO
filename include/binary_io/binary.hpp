@@ -21,7 +21,7 @@ class Binary: public Element<Enum, key, byte_size * 8, void*> {
     }
   }
   // write
-  static void Write(
+  static bool Write(
           void* buffer_head,
           const std::size_t& bit_offset,
           const void* value_ptr) {
@@ -30,7 +30,9 @@ class Binary: public Element<Enum, key, byte_size * 8, void*> {
               reinterpret_cast<uint8_t*>(buffer_head) + bit_offset / 8,
               value_ptr,
               byte_size);
+      return true;
     }
+    return false;
   }
 };
 }  // namespace binary_io

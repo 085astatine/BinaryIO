@@ -1,5 +1,5 @@
-#ifndef BINARY_IO_BITFIELD_HPP_
-#define BINARY_IO_BITFIELD_HPP_
+#ifndef BINARY_IO_VALUE_HPP_
+#define BINARY_IO_VALUE_HPP_
 
 #include "binary_io/element.hpp"
 
@@ -38,4 +38,4 @@ class Value: public Element<Enum, key, sizeof(Type) * 8, Type> {
   }
 };
 }  // namespace binary_io
-#endif  // BINARY_IO_BITFIELD_HPP_
+#endif  // BINARY_IO_VALUE_HPP_

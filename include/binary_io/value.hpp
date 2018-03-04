@@ -1,6 +1,7 @@
 #ifndef BINARY_IO_VALUE_HPP_
 #define BINARY_IO_VALUE_HPP_
 
+#include <boost/optional.hpp>
 #include "binary_io/element.hpp"
 
 namespace binary_io {
@@ -8,7 +9,7 @@ template <typename Enum, Enum key, typename Type>
 class Value: public Element<Enum, key, sizeof(Type) * 8, Type> {
  public:
   // read
-  static Type Read(
+  static boost::optional<Type> Read(
           const void* buffer_head,
           const std::size_t& bit_offset) {
     assert(bit_offset % 8 == 0);

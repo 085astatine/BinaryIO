@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <type_traits>
+#include <boost/optional.hpp>
 #include "binary_io/element.hpp"
 
 namespace binary_io {
@@ -29,7 +30,7 @@ class Bitfield: public Element<Enum, key, bit_size, Type> {
     return default_value;
   }
   // read
-  static Type Read(
+  static boost::optional<Type> Read(
           const void* buffer_head,
           const std::size_t& bit_offset) {
     auto result = Type(0);
@@ -44,14 +45,18 @@ class Bitfield: public Element<Enum, key, bit_size, Type> {
         result += 0x1;
       }
     }
-    return Normalize(result);
+    if (IsValid(result)) {
+      return result;
+    } else {
+      return boost::none;
+    }
   }
   // write
   static void Write(
           void* buffer_head,
           const std::size_t& bit_offset,
           const Type& value) {
-    const auto normalized_value = Normalize(value);
+    const auto normalized_value = IsValid(value)? value: DefaultValue();
     for (std::size_t i = 0; i < bit_size; ++i) {
       // bit mask
       const auto value_byte =
@@ -68,11 +73,11 @@ class Bitfield: public Element<Enum, key, bit_size, Type> {
   }
 
  private:
-  static constexpr Type Normalize(
+  // check if the value is valid
+  static constexpr bool IsValid(
           const Type& value) {
     return (min_value <= value && value <= max_value)
-           ? value
-           : DefaultValue();
+           || value == DefaultValue();
   }
 };
 }  // namespace binary_io

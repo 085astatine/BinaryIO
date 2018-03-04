@@ -15,6 +15,7 @@ BOOST_AUTO_TEST_CASE(less_than_min) {
   // read
   const std::array<uint8_t, 1> read_buffer = {{0x08}};
   Reader<TestStructure> reader(read_buffer.data(), read_buffer.size());
+  BOOST_CHECK(!reader.GetOptional<TestKey::Key00>());
   BOOST_CHECK_EQUAL(reader.Get<TestKey::Key00>(), 0x10);
   // write
   std::array<uint8_t, 1> write_buffer = {};
@@ -36,6 +37,7 @@ BOOST_AUTO_TEST_CASE(greater_than_max) {
   // read
   const std::array<uint8_t, 1> read_buffer = {{0x1f}};
   Reader<TestStructure> reader(read_buffer.data(), read_buffer.size());
+  BOOST_CHECK(!reader.GetOptional<TestKey::Key00>());
   BOOST_CHECK_EQUAL(reader.Get<TestKey::Key00>(), 0x01);
   // write
   std::array<uint8_t, 1> write_buffer = {};

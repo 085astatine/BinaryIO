@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <type_traits>
+#include <boost/optional.hpp>
 #include "binary_io/structure.hpp"
 
 namespace binary_io {
@@ -23,12 +24,12 @@ class Reader {
     assert(buffer_head_ || buffer_size_ == 0);
     assert(structure::bit_size() <= buffer_size_ * 8);
   }
-  // getter
+  // getter: optional
   template<kind key, typename... Args>
   typename std::enable_if<
           impl::is_default_value_defined<element<key>>::value,
-          typename element<key>::value_type>::type
-  Get(Args&&... args) const {
+          boost::optional<typename element<key>::value_type>>::type
+  GetOptional(Args&&... args) const {
     static_assert(key != kind::End, "End is reserved");
     static_assert(element<key>::key != kind::End, "invalid key");
     const auto bit_offset = structure::template bit_offset<key>();
@@ -37,10 +38,20 @@ class Reader {
       return element<key>::Read(
               buffer_head_,
               bit_offset,
-              args...);
-    } else {
-      return element<key>::DefaultValue();
+              std::forward<Args>(args)...);
     }
+    return boost::none;
+  }
+  // getter
+  template<kind key, typename... Args>
+  typename std::enable_if<
+          impl::is_default_value_defined<element<key>>::value,
+          typename element<key>::value_type>::type
+  Get(Args&&... args) const {
+    if (const auto result = GetOptional<key>(std::forward<Args>(args)...)) {
+      return *result;
+    }
+    return element<key>::DefaultValue();
   }
   // getter: DefaultValue is not defined
   template<kind key, typename... Args>
@@ -56,7 +67,7 @@ class Reader {
       return element<key>::Read(
               buffer_head_,
               bit_offset,
-              args...);
+              std::forward<Args>(args)...);
     }
   }
 

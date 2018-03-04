@@ -3,6 +3,7 @@
 
 #include <limits>
 #include <type_traits>
+#include <boost/optional.hpp>
 #include "binary_io/value.hpp"
 
 namespace binary_io {
@@ -26,26 +27,32 @@ class Integer: public Value<Enum, key, Type> {
     return default_value;
   }
   // read
-  static Type Read(
+  static boost::optional<Type> Read(
           const void* buffer_head,
           const std::size_t& bit_offset) {
-    return Normalize(base::Read(buffer_head, bit_offset));
+    if (const auto result = base::Read(buffer_head, bit_offset)) {
+      if (IsValid(*result)) {
+        return result;
+      }
+    }
+    return boost::none;
   }
   // write
   static void Write(
           void* buffer_head,
           const std::size_t& bit_offset,
           const Type& value) {
-    base::Write(buffer_head, bit_offset, Normalize(value));
+    base::Write(buffer_head,
+                bit_offset,
+                IsValid(value)? value: DefaultValue());
   }
 
  private:
-  // normalize
-  static constexpr Type Normalize(
+  // check if the value is valid
+  static constexpr bool IsValid(
           const Type& value) {
     return (min_value <= value && value <= max_value)
-           ? value
-           : DefaultValue();
+           || value == DefaultValue();
   }
 };
 }  // namespace binary_io

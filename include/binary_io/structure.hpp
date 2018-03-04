@@ -20,7 +20,7 @@ class is_default_value_defined {
   static auto check(U) -> decltype(U::DefaultValue(), std::true_type{});
   static std::false_type check(...);
 
-public:
+ public:
   static constexpr bool value = decltype(check(std::declval<T>()))::value;
 };
 // Element Iterator: end
@@ -120,7 +120,7 @@ class Structure {
   template <Enum key, typename Head, typename... Tail>
   struct get_element<key, Head, Tail...> {
     static_assert(key != Head::key
-                  || get_element<key ,Tail...>::type::key == Enum::End,
+                  || get_element<key, Tail...>::type::key == Enum::End,
                   "dupricate key");
     using type = typename std::conditional<
             key == Head::key,

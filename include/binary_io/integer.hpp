@@ -1,6 +1,7 @@
 #ifndef BINARY_IO_INTEGER_HPP_
 #define BINARY_IO_INTEGER_HPP_
 
+#include <limits>
 #include <type_traits>
 #include "binary_io/value.hpp"
 

@@ -26,6 +26,7 @@ include_directories(
 add_executable(
         Test
         test.cpp
+        test/array.cpp
         test/binary.cpp
         test/bitfield.cpp
         test/float.cpp

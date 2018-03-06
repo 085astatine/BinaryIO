@@ -10,8 +10,8 @@ BOOST_AUTO_TEST_SUITE(binary)
 // float
 BOOST_AUTO_TEST_CASE(binary) {
   using TestStructure = Structure<
-        TestKey,
-        Binary<TestKey, TestKey::Key00, 8>>;
+          TestKey,
+          Binary<TestKey, TestKey::Key00, 8>>;
   const std::array<uint8_t, 8> binary = {{
           0x10, 0x32, 0x54, 0x76, 0x98, 0xba, 0xdc, 0xfe}};
   // read

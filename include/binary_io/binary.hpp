@@ -1,6 +1,8 @@
 #ifndef BINARY_IO_BINARY_HPP_
 #define BINARY_IO_BINARY_HPP_
 
+#include <cassert>
+#include <cstring>
 #include <type_traits>
 #include "binary_io/element.hpp"
 
@@ -13,6 +15,7 @@ class Binary: public Element<Enum, key, byte_size * 8, void*> {
           const void* buffer_head,
           const std::size_t& bit_offset,
           void* output_ptr) {
+    assert(bit_offset % 8 == 0);
     if (output_ptr) {
       std::memmove(
               output_ptr,
@@ -25,6 +28,7 @@ class Binary: public Element<Enum, key, byte_size * 8, void*> {
           void* buffer_head,
           const std::size_t& bit_offset,
           const void* value_ptr) {
+    assert(bit_offset % 8 == 0);
     if (value_ptr) {
       std::memmove(
               reinterpret_cast<uint8_t*>(buffer_head) + bit_offset / 8,

@@ -10,8 +10,8 @@ BOOST_AUTO_TEST_SUITE(floating_point)
 // float
 BOOST_AUTO_TEST_CASE(float32) {
   using TestStructure = Structure<
-        TestKey,
-        Float<TestKey, TestKey::Key00, float>>;
+          TestKey,
+          Float<TestKey, TestKey::Key00, float>>;
   // read
   const float pi = 3.1415926f;
   std::array<uint8_t, 4> read_buffer = {};
@@ -32,8 +32,8 @@ BOOST_AUTO_TEST_CASE(float32) {
 // double
 BOOST_AUTO_TEST_CASE(float64) {
   using TestStructure = Structure<
-        TestKey,
-        Float<TestKey, TestKey::Key00, double>>;
+          TestKey,
+          Float<TestKey, TestKey::Key00, double>>;
   // read
   const float pi = 3.141592653589793;
   std::array<uint8_t, 8> read_buffer = {};

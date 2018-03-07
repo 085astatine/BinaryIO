@@ -29,6 +29,7 @@ add_executable(
         test/array.cpp
         test/binary.cpp
         test/bitfield.cpp
+        test/child.cpp
         test/float.cpp
         test/integer.cpp
         test/padding.cpp

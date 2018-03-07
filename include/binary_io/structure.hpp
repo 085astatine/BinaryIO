@@ -151,6 +151,10 @@ class Structure {
     return impl::get_bit_offset<Enum, Enum::End, iterator_begin>();
   }
 
+  static constexpr std::size_t byte_size() {
+    return bit_size() / 8 + ((bit_size() % 8 == 0)? 0: 1);
+  }
+
   template <Enum key>
   static constexpr std::size_t element_index() {
     static_assert(key != Enum::End, "End is reserved");

@@ -22,7 +22,7 @@ class Reader {
     : buffer_head_(buffer_head),
       buffer_size_(buffer_size) {
     assert(buffer_head_ || buffer_size_ == 0);
-    assert(structure::bit_size() <= buffer_size_ * 8);
+    assert(structure::byte_size() <= buffer_size_);
   }
   // getter: optional
   template<kind key, typename... Args>

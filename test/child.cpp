@@ -21,6 +21,13 @@ BOOST_AUTO_TEST_CASE(uint8) {
   // size
   BOOST_CHECK_EQUAL(TestStructure::bit_size(), 24);
   BOOST_CHECK_EQUAL(TestStructure::element_size(), 2);
+  // read & write
+  const std::array<uint8_t, 3> binary{{0x10, 0x32, 0x54}};
+  // read
+  Reader<TestStructure> reader(binary.data(), binary.size());
+  BOOST_CHECK_EQUAL(reader.Get<TestKey::Key00>()->Get<TestKey::Key00>(), 0x10);
+  BOOST_CHECK_EQUAL(reader.Get<TestKey::Key00>()->Get<TestKey::Key01>(), 0x32);
+  BOOST_CHECK_EQUAL(reader.Get<TestKey::Key01>(), 0x54);
 }
 BOOST_AUTO_TEST_SUITE_END()  // child
 }  // namespace binary_io

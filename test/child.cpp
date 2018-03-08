@@ -30,6 +30,20 @@ BOOST_AUTO_TEST_CASE(uint8) {
   BOOST_CHECK_EQUAL(reader.Get<TestKey::Key00>()->Get<TestKey::Key00>(), 0x10);
   BOOST_CHECK_EQUAL(reader.Get<TestKey::Key00>()->Get<TestKey::Key01>(), 0x32);
   BOOST_CHECK_EQUAL(reader.Get<TestKey::Key01>(), 0x54);
+  // write
+  std::array<uint8_t, 3> write_buffer{};
+  Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
+  writer.Set<TestKey::Key00>()->Set<TestKey::Key00>(0x10);
+  BOOST_CHECK(!writer.IsAllSet());
+  writer.Set<TestKey::Key00>()->Set<TestKey::Key01>(0x32);
+  BOOST_CHECK(!writer.IsAllSet());
+  writer.Set<TestKey::Key01>(0x54);
+  BOOST_CHECK(writer.IsAllSet());
+  BOOST_CHECK_EQUAL_COLLECTIONS(
+          binary.begin(),
+          binary.end(),
+          write_buffer.begin(),
+          write_buffer.end());
 }
 // nested
 BOOST_AUTO_TEST_CASE(nested) {
@@ -52,6 +66,54 @@ BOOST_AUTO_TEST_CASE(nested) {
   BOOST_CHECK_EQUAL(TestStructure::element_index<TestKey::Key01>(), 3);
   BOOST_CHECK_EQUAL(TestStructure::element_index<TestKey::Key02>(), 5);
   BOOST_CHECK_EQUAL(TestStructure::element_size(), 6);
+  // read & write
+  const std::array<uint8_t, 7> binary={{
+          0x10, 0x32, 0x54, 0x76, 0x98, 0xba, 0xdc}};
+  // read
+  Reader<TestStructure> reader(binary.data(), binary.size());
+  BOOST_CHECK_EQUAL(
+          reader.Get<TestKey::Key00>()
+                ->Get<TestKey::Key00>()
+                ->Get<TestKey::Key00>(),
+          0x10);
+  BOOST_CHECK_EQUAL(
+          reader.Get<TestKey::Key00>()
+                ->Get<TestKey::Key00>()
+                ->Get<TestKey::Key01>(),
+          0x32);
+  BOOST_CHECK_EQUAL(
+          reader.Get<TestKey::Key00>()->Get<TestKey::Key01>(),
+          0x7654);
+  BOOST_CHECK_EQUAL(
+          reader.Get<TestKey::Key01>()->Get<TestKey::Key00>(),
+          0x98);
+  BOOST_CHECK_EQUAL(
+          reader.Get<TestKey::Key01>()->Get<TestKey::Key01>(),
+          0xba);
+  BOOST_CHECK_EQUAL(reader.Get<TestKey::Key02>(), 0xdc);
+  // write
+  std::array<uint8_t, 7> write_buffer={};
+  Writer<TestStructure> writer(write_buffer.data(), write_buffer.size());
+  writer.Set<TestKey::Key00>()
+        ->Set<TestKey::Key00>()
+        ->Set<TestKey::Key00>(0x10);
+  writer.Set<TestKey::Key00>()
+        ->Set<TestKey::Key00>()
+        ->Set<TestKey::Key01>(0x32);
+  writer.Set<TestKey::Key00>()
+        ->Set<TestKey::Key01>(0x7654);
+  writer.Set<TestKey::Key01>()
+        ->Set<TestKey::Key00>(0x98);
+  writer.Set<TestKey::Key01>()
+        ->Set<TestKey::Key01>(0xba);
+  BOOST_CHECK(!writer.IsAllSet());
+  writer.Set<TestKey::Key02>(0xdc);
+  BOOST_CHECK(writer.IsAllSet());
+  BOOST_CHECK_EQUAL_COLLECTIONS(
+          binary.begin(),
+          binary.end(),
+          write_buffer.begin(),
+          write_buffer.end());
 }
 BOOST_AUTO_TEST_SUITE_END()  // child
 }  // namespace binary_io

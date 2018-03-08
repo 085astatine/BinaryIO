@@ -101,24 +101,11 @@ constexpr std::size_t get_index() {
 template <
         std::size_t index, typename Enum, Enum key, typename Iterator,
         typename std::enable_if<
-            Iterator::element::key != Enum::End
-            && !is_structure<typename Iterator::element::value_type>::value>
-            ::type *& = enabler>
+            Iterator::element::key != Enum::End>::type *& = enabler>
 constexpr std::size_t get_index() {
   return key == Iterator::element::key
          ? index
-         : get_index<index + 1, Enum, key, typename Iterator::next>();
-}
-template <
-        std::size_t index, typename Enum, Enum key, typename Iterator,
-        typename std::enable_if<
-            Iterator::element::key != Enum::End
-            && is_structure<typename Iterator::element::value_type>::value>
-            ::type *& = enabler>
-constexpr std::size_t get_index() {
-  return key == Iterator::element::key
-         ? index
-         : get_index<index + Iterator::element::value_type::element_size(),
+         : get_index<index + Iterator::element::size,
                      Enum, key, typename Iterator::next>();
 }
 }  // namespace impl

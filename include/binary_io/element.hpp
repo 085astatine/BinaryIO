@@ -15,7 +15,8 @@ class Element {
  public:
   using value_type = Type;
   static constexpr Enum key = key_;
-  static constexpr size_t bit_size = bit_size_;
+  static constexpr std::size_t bit_size = bit_size_;
+  static constexpr std::size_t size = 1;
 
   /*
   // default value

@@ -92,6 +92,10 @@ class Reader {
       return boost::none;
     }
   }
+  // head
+  const void* Head() const {
+    return buffer_head_;
+  }
 
  private:
   const void* buffer_head_;

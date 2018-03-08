@@ -21,7 +21,7 @@ class Writer {
          const std::size_t& buffer_size)
     : buffer_head_(buffer_head),
       buffer_size_(buffer_size),
-      written_flags{} {
+      is_set_bits_{} {
     assert(buffer_head_ || buffer_size_ == 0);
     assert(structure::byte_size() <= buffer_size_);
   }
@@ -37,7 +37,7 @@ class Writer {
               buffer_head_,
               bit_offset,
               std::forward<Args>(args)...)) {
-        SetWrittenFlag(structure::template element_index<key>(), true);
+        IsSet(structure::template element_index<key>(), true);
         return true;
       }
     }
@@ -58,7 +58,7 @@ class Writer {
   // have been all element set
   bool IsAllSet() const {
     for (std::size_t i = 0; i < structure::element_size(); ++i) {
-      if (!GetWrittenFlag(i)) {
+      if (!IsSet(i)) {
         return false;
       }
     }
@@ -75,26 +75,26 @@ class Writer {
     if (buffer_head_
         && (bit_offset + element<key>::bit_size <= buffer_size_ * 8)) {
       if (element<key>::WriteDefaultValue(buffer_head_, bit_offset)) {
-        SetWrittenFlag(structure::template element_index<key>(), true);
+        IsSet(structure::template element_index<key>(), true);
         return true;
       }
     }
     return false;
   }
-  // get writtern flag
-  bool GetWrittenFlag(const std::size_t& index) const {
+  // get is_set_bit
+  bool IsSet(const std::size_t& index) const {
     const uint8_t mask = 0x1 << index % 8;
-    return (written_flags[index / 8] & mask) != 0;
+    return (is_set_bits_[index / 8] & mask) != 0;
   }
-  // set written flag
-  void SetWrittenFlag(
+  // set is_set_bit
+  void IsSet(
           const std::size_t& index,
-          const bool& is_written) {
+          const bool& is_set) {
     const uint8_t mask = 0x1 << index % 8;
-    if (is_written) {
-      written_flags[index / 8] |= mask;
+    if (is_set) {
+      is_set_bits_[index / 8] |= mask;
     } else {
-      written_flags[index / 8] &= ~mask;
+      is_set_bits_[index / 8] &= ~mask;
     }
   }
 
@@ -102,7 +102,7 @@ class Writer {
   std::size_t buffer_size_;
   std::array<uint8_t,
              structure::element_size() / 8
-             + ((structure::element_size() % 8 == 0)? 0: 1)> written_flags;
+             + ((structure::element_size() % 8 == 0)? 0: 1)> is_set_bits_;
 };
 }  // namespace binary_io
 #endif  // BINARY_IO_WRITER_HPP_

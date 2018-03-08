@@ -36,49 +36,41 @@ class is_structure {
 // Element Iterator: end
 template <
         typename Enum,
-        std::size_t index_,
         std::size_t bit_offset_,
         typename...>
 struct ElementIterator {
   struct DummyIterator {};
   using element = DummyElement<Enum>;
   using next = DummyIterator;
-  static constexpr std::size_t index = index_;
   static constexpr std::size_t bit_offset = bit_offset_;
 };
 // Element Iterator
 template <
         typename Enum,
-        size_t index_,
         size_t bit_offset_,
         typename Head,
         typename... Tail>
-struct ElementIterator<Enum, index_, bit_offset_, Head, Tail...> {
+struct ElementIterator<Enum, bit_offset_, Head, Tail...> {
   using element = Head;
   using next = ElementIterator<
           Enum,
-          index_ + 1,
           bit_offset_ + Head::bit_size,
           Tail...>;
-  static constexpr std::size_t index = index_;
   static constexpr std::size_t bit_offset = bit_offset_;
 };
 // Element Iterator: padding
 template <
         typename Enum,
-        size_t index,
         size_t bit_offset,
         size_t padding_bit_size,
         typename... Tail>
 struct ElementIterator<
             Enum,
-            index,
             bit_offset,
             Padding<padding_bit_size>,
             Tail...> :
         public ElementIterator<
                     Enum,
-                    index,
                     bit_offset + Padding<padding_bit_size>::bit_size,
                     Tail...> {};
 // get bit offset
@@ -100,27 +92,41 @@ constexpr std::size_t get_bit_offset() {
 }
 // get index
 template <
-        typename Enum, Enum key, typename Iterator,
+        std::size_t index, typename Enum, Enum key, typename Iterator,
         typename std::enable_if<Iterator::element::key == Enum::End>::type *&
                     = enabler>
 constexpr std::size_t get_index() {
-  return Iterator::index;
+  return index;
 }
 template <
-        typename Enum, Enum key, typename Iterator,
-        typename std::enable_if<Iterator::element::key != Enum::End>::type *&
-                    = enabler>
+        std::size_t index, typename Enum, Enum key, typename Iterator,
+        typename std::enable_if<
+            Iterator::element::key != Enum::End
+            && !is_structure<typename Iterator::element::value_type>::value>
+            ::type *& = enabler>
 constexpr std::size_t get_index() {
   return key == Iterator::element::key
-         ? Iterator::index
-         : get_index<Enum, key, typename Iterator::next>();
+         ? index
+         : get_index<index + 1, Enum, key, typename Iterator::next>();
+}
+template <
+        std::size_t index, typename Enum, Enum key, typename Iterator,
+        typename std::enable_if<
+            Iterator::element::key != Enum::End
+            && is_structure<typename Iterator::element::value_type>::value>
+            ::type *& = enabler>
+constexpr std::size_t get_index() {
+  return key == Iterator::element::key
+         ? index
+         : get_index<index + Iterator::element::value_type::element_size(),
+                     Enum, key, typename Iterator::next>();
 }
 }  // namespace impl
 
 template <typename Enum, typename... Args>
 class Structure {
  private:
-  using iterator_begin = impl::ElementIterator<Enum, 0, 0, Args...>;
+  using iterator_begin = impl::ElementIterator<Enum, 0, Args...>;
   // get element: end
   template <Enum, typename...>
   struct get_element {
@@ -169,11 +175,11 @@ class Structure {
   static constexpr std::size_t element_index() {
     static_assert(key != Enum::End, "End is reserved");
     static_assert(element<key>::key != Enum::End, "invalid key");
-    return impl::get_index<Enum, key, iterator_begin>();
+    return impl::get_index<0, Enum, key, iterator_begin>();
   }
 
   static constexpr std::size_t element_size() {
-    return impl::get_index<Enum, Enum::End, iterator_begin>();
+    return impl::get_index<0, Enum, Enum::End, iterator_begin>();
   }
 };
 }  // namespace binary_io

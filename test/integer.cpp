@@ -5,8 +5,6 @@
 #include "binary_io/writer.hpp"
 #include "./key.h"
 
-#include <iostream>
-
 namespace binary_io {
 BOOST_AUTO_TEST_SUITE(integer)
 // less than min

@@ -8,7 +8,7 @@
 
 namespace binary_io {
 template <typename Enum, Enum key, typename Type, std::size_t N>
-class Array: public Element<Enum, key, sizeof(Type) * N * 8, Type> {
+class Array: public Element<Enum, key, sizeof(Type) * N * 8, Type[N]> {
   static constexpr std::size_t byte_size = sizeof(Type) * N;
 
  public:

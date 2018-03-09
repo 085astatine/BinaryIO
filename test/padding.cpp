@@ -2,7 +2,6 @@
 #include <array>
 #include "binary_io/bitfield.hpp"
 #include "binary_io/reader.hpp"
-#include "binary_io/structure.hpp"
 #include "binary_io/writer.hpp"
 #include "./key.h"
 

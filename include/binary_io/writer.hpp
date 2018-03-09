@@ -51,7 +51,7 @@ class Writer {
     return false;
   }
   // setter: child
-  template<kind key, typename... Args>
+  template<kind key>
   typename std::enable_if<
           impl::is_structure<typename element<key>::value_type>::value,
           boost::optional<Writer<typename element<key>::value_type>>>::type

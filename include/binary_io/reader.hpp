@@ -73,7 +73,7 @@ class Reader {
     }
   }
   // getter: strucutre
-  template<kind key, typename... Args>
+  template<kind key>
   typename std::enable_if<
           impl::is_structure<typename element<key>::value_type>::value,
           boost::optional<Reader<typename element<key>::value_type>>>::type

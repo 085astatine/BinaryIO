@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE(greater_than_max) {
           write_buffer.end());
 }
 // uint8_t
-BOOST_AUTO_TEST_CASE(unit8) {
+BOOST_AUTO_TEST_CASE(uint8) {
   using TestStructure = Structure<
           TestKey,
           Bitfield<TestKey, TestKey::Key00, 1, uint8_t>,
